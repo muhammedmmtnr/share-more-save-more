@@ -14,7 +14,116 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      listing_participants: {
+        Row: {
+          id: string
+          joined_at: string
+          listing_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          listing_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          listing_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_participants_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listings: {
+        Row: {
+          capacity: number
+          category: Database["public"]["Enums"]["share_category"]
+          cost_per_person: number | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          location: string | null
+          owner_id: string
+          starts_at: string | null
+          status: Database["public"]["Enums"]["listing_status"]
+          title: string
+          total_cost: number | null
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number
+          category: Database["public"]["Enums"]["share_category"]
+          cost_per_person?: number | null
+          created_at?: string
+          description: string
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          owner_id: string
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          title: string
+          total_cost?: number | null
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number
+          category?: Database["public"]["Enums"]["share_category"]
+          cost_per_person?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          owner_id?: string
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          title?: string
+          total_cost?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          created_at: string
+          display_name: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +132,17 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      listing_status: "open" | "full" | "closed"
+      share_category:
+        | "mobility"
+        | "accommodation"
+        | "food"
+        | "shopping"
+        | "travel"
+        | "tickets"
+        | "software"
+        | "equipment"
+        | "community"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +269,19 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      listing_status: ["open", "full", "closed"],
+      share_category: [
+        "mobility",
+        "accommodation",
+        "food",
+        "shopping",
+        "travel",
+        "tickets",
+        "software",
+        "equipment",
+        "community",
+      ],
+    },
   },
 } as const
