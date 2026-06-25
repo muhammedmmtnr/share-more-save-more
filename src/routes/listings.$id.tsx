@@ -1,9 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { MapPin, Calendar, Users, ArrowLeft } from "lucide-react";
+import { MapPin, Calendar, Users, ArrowLeft, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import { VerifiedBadge } from "@/components/verified-badge";
+import { RatingStars } from "@/components/rating-stars";
+import { RatingDialog } from "@/components/rating-dialog";
+import { ReportDialog } from "@/components/report-dialog";
 import { CATEGORY_BY_SLUG } from "@/lib/categories";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -27,15 +31,15 @@ function ListingDetail() {
       ]);
       if (listingRes.error) throw listingRes.error;
       let owner = null;
+      let ratings: any[] = [];
       if (listingRes.data) {
-        const { data: prof } = await supabase.from("profiles").select("display_name, city").eq("id", listingRes.data.owner_id).maybeSingle();
-        owner = prof;
+        const [{ data: prof }, { data: rs }] = await Promise.all([
+          supabase.from("profiles").select("id,display_name,city,verified,rating_avg,rating_count").eq("id", listingRes.data.owner_id).maybeSingle(),
+          supabase.from("ratings").select("id,stars,comment,created_at,rater_id").eq("listing_id", id).order("created_at", { ascending: false }),
+        ]);
+        owner = prof; ratings = rs ?? [];
       }
-      return {
-        listing: listingRes.data,
-        participants: participantsRes.data ?? [],
-        owner,
-      };
+      return { listing: listingRes.data, participants: participantsRes.data ?? [], owner, ratings };
     },
   });
 
@@ -64,12 +68,11 @@ function ListingDetail() {
   const isOwner = user?.id === listing.owner_id;
   const joined = data.participants.some(p => p.user_id === user?.id);
   const spotsLeft = Math.max(0, listing.capacity - data.participants.length - 1);
+  const canRateOwner = !!user && (joined || isOwner === false && false); // joiners can rate owner
+  const myRatingExists = data.ratings.some(r => r.rater_id === user?.id);
 
   const handleJoin = async () => {
-    if (!user) {
-      navigate({ to: "/auth" });
-      return;
-    }
+    if (!user) { navigate({ to: "/auth" }); return; }
     const { error } = await supabase.from("listing_participants").insert({
       listing_id: listing.id, user_id: user.id,
     });
@@ -84,13 +87,33 @@ function ListingDetail() {
     else { toast.success("You've left this share"); qc.invalidateQueries({ queryKey: ["listing", id] }); }
   };
 
+  const startChat = async () => {
+    if (!user) { navigate({ to: "/auth" }); return; }
+    if (isOwner) return;
+    // find or create conversation
+    const { data: existing } = await supabase.from("conversations")
+      .select("id").eq("listing_id", listing.id).eq("joiner_id", user.id).maybeSingle();
+    let convoId = existing?.id;
+    if (!convoId) {
+      const { data: created, error } = await supabase.from("conversations")
+        .insert({ listing_id: listing.id, joiner_id: user.id, owner_id: listing.owner_id })
+        .select("id").single();
+      if (error) return toast.error(error.message);
+      convoId = created.id;
+    }
+    navigate({ to: "/messages/$id", params: { id: convoId! } });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
-        <Link to="/browse" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
-          <ArrowLeft className="h-4 w-4 mr-1" /> Back to browse
-        </Link>
+        <div className="flex items-center justify-between mb-6">
+          <Link to="/browse" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back to browse
+          </Link>
+          {!isOwner && <ReportDialog reportedListingId={listing.id} label="Report listing" />}
+        </div>
 
         <div className={`rounded-3xl bg-gradient-to-br ${cat?.color} p-8 sm:p-10 text-white mb-8 relative overflow-hidden`}>
           <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-white/10" />
@@ -100,7 +123,15 @@ function ListingDetail() {
             </span>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{listing.title}</h1>
             {data.owner && (
-              <p className="mt-3 text-white/90 text-sm">Hosted by {data.owner.display_name}{data.owner.city && ` · ${data.owner.city}`}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-white/90 text-sm">
+                <span>Hosted by {data.owner.display_name}{data.owner.city && ` · ${data.owner.city}`}</span>
+                {data.owner.verified && <VerifiedBadge className="bg-white/20 !text-white" />}
+              </div>
+            )}
+            {data.owner && (
+              <div className="mt-2 [&_*]:!text-white/90">
+                <RatingStars value={Number(data.owner.rating_avg ?? 0)} count={data.owner.rating_count ?? 0} />
+              </div>
             )}
           </div>
         </div>
@@ -123,6 +154,33 @@ function ListingDetail() {
                   <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1"><Calendar className="h-3 w-3" /> When</div>
                   <div className="font-medium">{new Date(listing.starts_at).toLocaleString()}</div>
                 </div>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-border/60 bg-card p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-semibold">Reviews</h2>
+                {canRateOwner && !myRatingExists && (
+                  <RatingDialog
+                    listingId={listing.id}
+                    ratedUserId={listing.owner_id}
+                    ratedName={data.owner?.display_name ?? "host"}
+                    onRated={() => qc.invalidateQueries({ queryKey: ["listing", id] })}
+                  />
+                )}
+              </div>
+              {data.ratings.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No reviews yet.</p>
+              ) : (
+                <ul className="space-y-3">
+                  {data.ratings.map(r => (
+                    <li key={r.id} className="rounded-xl bg-muted/40 p-3">
+                      <RatingStars value={r.stars} />
+                      {r.comment && <p className="text-sm mt-1">{r.comment}</p>}
+                      <p className="text-[10px] text-muted-foreground mt-1">{new Date(r.created_at).toLocaleDateString()}</p>
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
           </div>
@@ -153,6 +211,14 @@ function ListingDetail() {
                   {user ? "Join this share" : "Sign in to join"}
                 </Button>
               )}
+              {!isOwner && (
+                <Button onClick={startChat} variant="outline" className="w-full rounded-full mt-2">
+                  <MessageCircle className="h-4 w-4 mr-1.5" /> Chat with host
+                </Button>
+              )}
+              <p className="text-[10px] text-muted-foreground text-center mt-3">
+                🔒 All chats are anonymous. Phone numbers stay private.
+              </p>
             </div>
           </aside>
         </div>

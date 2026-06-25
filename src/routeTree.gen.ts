@@ -16,8 +16,11 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ListingsIdRouteImport } from './routes/listings.$id'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
+import { Route as AuthenticatedVerifyRouteImport } from './routes/_authenticated/verify'
 import { Route as AuthenticatedNewRouteImport } from './routes/_authenticated/new'
 import { Route as AuthenticatedMyRouteImport } from './routes/_authenticated/my'
+import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
+import { Route as AuthenticatedMessagesIdRouteImport } from './routes/_authenticated/messages.$id'
 
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
@@ -53,6 +56,11 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedVerifyRoute = AuthenticatedVerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedNewRoute = AuthenticatedNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -63,26 +71,42 @@ const AuthenticatedMyRoute = AuthenticatedMyRouteImport.update({
   path: '/my',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMessagesIdRoute = AuthenticatedMessagesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedMessagesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/my': typeof AuthenticatedMyRoute
   '/new': typeof AuthenticatedNewRoute
+  '/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/messages/$id': typeof AuthenticatedMessagesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/my': typeof AuthenticatedMyRoute
   '/new': typeof AuthenticatedNewRoute
+  '/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/messages/$id': typeof AuthenticatedMessagesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -91,10 +115,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/_authenticated/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/_authenticated/my': typeof AuthenticatedMyRoute
   '/_authenticated/new': typeof AuthenticatedNewRoute
+  '/_authenticated/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/_authenticated/messages/$id': typeof AuthenticatedMessagesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -103,20 +130,26 @@ export interface FileRouteTypes {
     | '/auth'
     | '/browse'
     | '/how-it-works'
+    | '/messages'
     | '/my'
     | '/new'
+    | '/verify'
     | '/category/$slug'
     | '/listings/$id'
+    | '/messages/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/browse'
     | '/how-it-works'
+    | '/messages'
     | '/my'
     | '/new'
+    | '/verify'
     | '/category/$slug'
     | '/listings/$id'
+    | '/messages/$id'
   id:
     | '__root__'
     | '/'
@@ -124,10 +157,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/browse'
     | '/how-it-works'
+    | '/_authenticated/messages'
     | '/_authenticated/my'
     | '/_authenticated/new'
+    | '/_authenticated/verify'
     | '/category/$slug'
     | '/listings/$id'
+    | '/_authenticated/messages/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -191,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategorySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/verify': {
+      id: '/_authenticated/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof AuthenticatedVerifyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/new': {
       id: '/_authenticated/new'
       path: '/new'
@@ -205,17 +248,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/messages': {
+      id: '/_authenticated/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AuthenticatedMessagesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/messages/$id': {
+      id: '/_authenticated/messages/$id'
+      path: '/$id'
+      fullPath: '/messages/$id'
+      preLoaderRoute: typeof AuthenticatedMessagesIdRouteImport
+      parentRoute: typeof AuthenticatedMessagesRoute
+    }
   }
 }
 
+interface AuthenticatedMessagesRouteChildren {
+  AuthenticatedMessagesIdRoute: typeof AuthenticatedMessagesIdRoute
+}
+
+const AuthenticatedMessagesRouteChildren: AuthenticatedMessagesRouteChildren = {
+  AuthenticatedMessagesIdRoute: AuthenticatedMessagesIdRoute,
+}
+
+const AuthenticatedMessagesRouteWithChildren =
+  AuthenticatedMessagesRoute._addFileChildren(
+    AuthenticatedMessagesRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRouteWithChildren
   AuthenticatedMyRoute: typeof AuthenticatedMyRoute
   AuthenticatedNewRoute: typeof AuthenticatedNewRoute
+  AuthenticatedVerifyRoute: typeof AuthenticatedVerifyRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedMessagesRoute: AuthenticatedMessagesRouteWithChildren,
   AuthenticatedMyRoute: AuthenticatedMyRoute,
   AuthenticatedNewRoute: AuthenticatedNewRoute,
+  AuthenticatedVerifyRoute: AuthenticatedVerifyRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -233,13 +307,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
