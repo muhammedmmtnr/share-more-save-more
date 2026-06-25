@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as CommunitiesRouteImport } from './routes/communities'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -21,10 +22,16 @@ import { Route as AuthenticatedNewRouteImport } from './routes/_authenticated/ne
 import { Route as AuthenticatedMyRouteImport } from './routes/_authenticated/my'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
 import { Route as AuthenticatedMessagesIdRouteImport } from './routes/_authenticated/messages.$id'
+import { Route as AuthenticatedCommunitiesIdRouteImport } from './routes/_authenticated/communities.$id'
 
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunitiesRoute = CommunitiesRouteImport.update({
+  id: '/communities',
+  path: '/communities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BrowseRoute = BrowseRouteImport.update({
@@ -81,11 +88,18 @@ const AuthenticatedMessagesIdRoute = AuthenticatedMessagesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedMessagesRoute,
 } as any)
+const AuthenticatedCommunitiesIdRoute =
+  AuthenticatedCommunitiesIdRouteImport.update({
+    id: '/communities/$id',
+    path: '/communities/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/communities': typeof CommunitiesRoute
   '/how-it-works': typeof HowItWorksRoute
   '/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/my': typeof AuthenticatedMyRoute
@@ -93,12 +107,14 @@ export interface FileRoutesByFullPath {
   '/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/communities/$id': typeof AuthenticatedCommunitiesIdRoute
   '/messages/$id': typeof AuthenticatedMessagesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/communities': typeof CommunitiesRoute
   '/how-it-works': typeof HowItWorksRoute
   '/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/my': typeof AuthenticatedMyRoute
@@ -106,6 +122,7 @@ export interface FileRoutesByTo {
   '/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/communities/$id': typeof AuthenticatedCommunitiesIdRoute
   '/messages/$id': typeof AuthenticatedMessagesIdRoute
 }
 export interface FileRoutesById {
@@ -114,6 +131,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/communities': typeof CommunitiesRoute
   '/how-it-works': typeof HowItWorksRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/_authenticated/my': typeof AuthenticatedMyRoute
@@ -121,6 +139,7 @@ export interface FileRoutesById {
   '/_authenticated/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
+  '/_authenticated/communities/$id': typeof AuthenticatedCommunitiesIdRoute
   '/_authenticated/messages/$id': typeof AuthenticatedMessagesIdRoute
 }
 export interface FileRouteTypes {
@@ -129,6 +148,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/browse'
+    | '/communities'
     | '/how-it-works'
     | '/messages'
     | '/my'
@@ -136,12 +156,14 @@ export interface FileRouteTypes {
     | '/verify'
     | '/category/$slug'
     | '/listings/$id'
+    | '/communities/$id'
     | '/messages/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/browse'
+    | '/communities'
     | '/how-it-works'
     | '/messages'
     | '/my'
@@ -149,6 +171,7 @@ export interface FileRouteTypes {
     | '/verify'
     | '/category/$slug'
     | '/listings/$id'
+    | '/communities/$id'
     | '/messages/$id'
   id:
     | '__root__'
@@ -156,6 +179,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/browse'
+    | '/communities'
     | '/how-it-works'
     | '/_authenticated/messages'
     | '/_authenticated/my'
@@ -163,6 +187,7 @@ export interface FileRouteTypes {
     | '/_authenticated/verify'
     | '/category/$slug'
     | '/listings/$id'
+    | '/_authenticated/communities/$id'
     | '/_authenticated/messages/$id'
   fileRoutesById: FileRoutesById
 }
@@ -171,6 +196,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
+  CommunitiesRoute: typeof CommunitiesRoute
   HowItWorksRoute: typeof HowItWorksRoute
   CategorySlugRoute: typeof CategorySlugRoute
   ListingsIdRoute: typeof ListingsIdRoute
@@ -183,6 +209,13 @@ declare module '@tanstack/react-router' {
       path: '/how-it-works'
       fullPath: '/how-it-works'
       preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/communities': {
+      id: '/communities'
+      path: '/communities'
+      fullPath: '/communities'
+      preLoaderRoute: typeof CommunitiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/browse': {
@@ -262,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMessagesIdRouteImport
       parentRoute: typeof AuthenticatedMessagesRoute
     }
+    '/_authenticated/communities/$id': {
+      id: '/_authenticated/communities/$id'
+      path: '/communities/$id'
+      fullPath: '/communities/$id'
+      preLoaderRoute: typeof AuthenticatedCommunitiesIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -283,6 +323,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMyRoute: typeof AuthenticatedMyRoute
   AuthenticatedNewRoute: typeof AuthenticatedNewRoute
   AuthenticatedVerifyRoute: typeof AuthenticatedVerifyRoute
+  AuthenticatedCommunitiesIdRoute: typeof AuthenticatedCommunitiesIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -290,6 +331,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMyRoute: AuthenticatedMyRoute,
   AuthenticatedNewRoute: AuthenticatedNewRoute,
   AuthenticatedVerifyRoute: AuthenticatedVerifyRoute,
+  AuthenticatedCommunitiesIdRoute: AuthenticatedCommunitiesIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -300,6 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
+  CommunitiesRoute: CommunitiesRoute,
   HowItWorksRoute: HowItWorksRoute,
   CategorySlugRoute: CategorySlugRoute,
   ListingsIdRoute: ListingsIdRoute,
