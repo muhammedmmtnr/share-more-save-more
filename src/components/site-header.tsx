@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Sparkles, Plus, LogOut, User as UserIcon } from "lucide-react";
+import { Sparkles, Plus, LogOut, User as UserIcon, MessageCircle, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -43,6 +43,9 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           {user ? (
             <>
+              <Button asChild size="icon" variant="ghost" className="rounded-full" title="Messages">
+                <Link to="/messages"><MessageCircle className="h-5 w-5" /></Link>
+              </Button>
               <Button asChild size="sm" className="rounded-full bg-[image:var(--gradient-hero)] text-white hover:opacity-95 border-0">
                 <Link to="/new"><Plus className="h-4 w-4 mr-1" /> Post a share</Link>
               </Button>
@@ -54,6 +57,10 @@ export function SiteHeader() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild><Link to="/my">My shares</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/messages">Messages</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/verify"><ShieldCheck className="h-4 w-4 mr-2" /> Get verified</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-2" /> Sign out
                   </DropdownMenuItem>
