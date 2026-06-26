@@ -21,13 +21,8 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-lg">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[image:var(--gradient-hero)] shadow-[var(--shadow-glow)] group-hover:scale-105 transition-transform">
-            <Sparkles className="h-5 w-5 text-white" />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-lg font-bold tracking-tight">ShareX</span>
-            <span className="text-[10px] text-muted-foreground -mt-0.5">Share Anything. Save Everything.</span>
-          </div>
+          <img src={sharexLogo.url} alt="ShareX" className="h-10 w-auto group-hover:scale-105 transition-transform" />
+          <span className="sr-only">ShareX — Share Anything. Save Everything.</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
