@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Sparkles, Wallet, Shield, Users } from "lucide-react";
+import { ArrowRight, Sparkles, Wallet, Shield, Users, Radio, MessageCircle, Network, Home as HomeIcon } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { ListingCard } from "@/components/listing-card";
 import { Button } from "@/components/ui/button";
