@@ -6,6 +6,7 @@ import { ListingCard } from "@/components/listing-card";
 import { Button } from "@/components/ui/button";
 import { CATEGORIES } from "@/lib/categories";
 import { supabase } from "@/integrations/supabase/client";
+import logo3d from "@/assets/sharecheya-3d.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,8 +41,8 @@ function Index() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[image:var(--gradient-hero)] opacity-95" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,white_0%,transparent_50%)] opacity-20" />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
-          <div className="max-w-3xl">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28 grid lg:grid-cols-[1.1fr_1fr] gap-12 items-center">
+          <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-sm px-4 py-1.5 text-sm text-white/95 mb-6 border border-white/20">
               <Sparkles className="h-3.5 w-3.5" /> India's community-powered super app
             </div>
@@ -74,6 +75,17 @@ function Index() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* 3D LOGO */}
+          <div className="relative flex justify-center lg:justify-end perspective-[1200px]">
+            <div className="absolute inset-0 -z-0 bg-[radial-gradient(circle_at_center,white_0%,transparent_60%)] opacity-25 blur-2xl" />
+            <img
+              src={logo3d.url}
+              alt="ShareCheya"
+              className="relative w-[280px] sm:w-[380px] lg:w-[460px] xl:w-[520px] h-auto animate-float-3d drop-shadow-[0_30px_60px_rgba(0,0,0,0.45)]"
+              style={{ transform: "rotateY(-12deg) rotateX(8deg)" }}
+            />
           </div>
         </div>
       </section>
