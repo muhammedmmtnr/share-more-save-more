@@ -157,6 +157,6 @@
   animation: float-3d 6s ease-in-out infinite;
 }
 
-@utility perspective-\[1200px\] {
+@utility perspective-1200 {
   perspective: 1200px;
 }
