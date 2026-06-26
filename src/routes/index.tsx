@@ -78,7 +78,7 @@ function Index() {
           </div>
 
           {/* 3D LOGO */}
-          <div className="relative flex justify-center lg:justify-end perspective-[1200px]">
+          <div className="relative flex justify-center lg:justify-end perspective-1200">
             <div className="absolute inset-0 -z-0 bg-[radial-gradient(circle_at_center,white_0%,transparent_60%)] opacity-25 blur-2xl" />
             <img
               src={logo3d.url}
