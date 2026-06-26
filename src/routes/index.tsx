@@ -123,6 +123,63 @@ function Index() {
         </div>
       </section>
 
+      {/* LIVE COMMUNITY PLATFORM */}
+      <section className="relative overflow-hidden border-y border-border/60 bg-gradient-to-br from-emerald-50 via-teal-50 to-indigo-50 dark:from-emerald-950/30 dark:via-teal-950/20 dark:to-indigo-950/30">
+        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/20 blur-3xl" />
+        <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-indigo-300/20 blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-20">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/80 dark:bg-white/10 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold text-primary mb-5 border border-primary/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+              </span>
+              LAUNCHING SOON · 🇮🇳 INDIA'S FIRST
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight">
+              India's First <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 bg-clip-text text-transparent">Live Community Platform</span>
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">
+              The future of communities is about to change. A new way to discover people, share ideas, and build communities — all in one place.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { i: Radio, t: "Real-time Conversations", d: "Live, in-the-moment discussions with your tribe.", c: "from-rose-500 to-pink-500", e: "✨" },
+              { i: MessageCircle, t: "Live Chat", d: "Instant messaging across every community room.", c: "from-emerald-500 to-teal-500", e: "💬" },
+              { i: Network, t: "Network & Connect", d: "Find people who share your goals and interests.", c: "from-sky-500 to-indigo-500", e: "🌐" },
+              { i: HomeIcon, t: "Community Hubs", d: "Apartments, campuses, offices — one place for all.", c: "from-amber-500 to-orange-500", e: "🏠" },
+            ].map(f => (
+              <div key={f.t} className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm p-6 hover:-translate-y-1 hover:shadow-[var(--shadow-card)] transition-all">
+                <div className={`absolute -top-10 -right-10 h-28 w-28 rounded-full bg-gradient-to-br ${f.c} opacity-10 group-hover:opacity-20 transition`} />
+                <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${f.c} text-white mb-4`}>
+                  <f.i className="h-6 w-6" />
+                </div>
+                <h3 className="font-semibold text-base flex items-center gap-1.5">{f.t} <span>{f.e}</span></h3>
+                <p className="text-sm text-muted-foreground mt-1">{f.d}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Button asChild size="lg" className="rounded-full bg-[image:var(--gradient-hero)] text-white border-0 h-12 px-7">
+              <Link to="/communities">Explore Community Hubs <ArrowRight className="ml-1 h-4 w-4" /></Link>
+            </Button>
+            <p className="text-xs text-muted-foreground">Stay tuned for the official launch.</p>
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-2">
+            {["#India", "#Community", "#LiveChat", "#Networking", "#Innovation", "#StartupLaunch"].map(t => (
+              <span key={t} className="rounded-full bg-white/70 dark:bg-white/10 border border-border/60 px-3 py-1 text-xs font-medium text-muted-foreground">
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
       {/* FEATURED */}
       {featured && featured.length > 0 && (
         <section className="bg-muted/40 border-y border-border/60">
