@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Sparkles, Plus, LogOut, User as UserIcon, MessageCircle, ShieldCheck } from "lucide-react";
+import { Plus, LogOut, User as UserIcon, MessageCircle, ShieldCheck } from "lucide-react";
+import sharexLogo from "@/assets/sharex-logo.png.asset.json";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
