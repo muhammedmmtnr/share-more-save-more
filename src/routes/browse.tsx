@@ -112,32 +112,36 @@ function BrowsePage() {
               {listingsWithLocations.map((listing) => {
                 const isSelected = selectedListing?.id === listing.id;
                 return (
-                  <button
+                  <div
                     key={listing.id}
-                    type="button"
-                    onClick={() => setSelectedId(listing.id)}
-                    className={`w-full rounded-2xl border p-4 text-left transition-colors ${isSelected ? "border-primary bg-primary/5" : "border-border/60 bg-card hover:border-primary/50"}`}
+                    className={`rounded-2xl border transition-colors ${isSelected ? "border-primary bg-primary/5" : "border-border/60 bg-card"}`}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="font-semibold line-clamp-2">{listing.title}</p>
-                        <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
-                          <MapPin className="h-3.5 w-3.5 shrink-0" /> {listing.location}
-                        </p>
-                      </div>
-                      <span className="shrink-0 rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
-                        {listing.category}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setSelectedId(listing.id)}
+                      className="h-auto w-full justify-start rounded-2xl p-4 text-left hover:bg-transparent"
+                    >
+                      <span className="flex min-w-0 flex-1 items-start justify-between gap-3">
+                        <span className="min-w-0">
+                          <span className="block font-semibold line-clamp-2">{listing.title}</span>
+                          <span className="mt-2 flex items-center gap-1.5 text-sm font-normal text-muted-foreground">
+                            <MapPin className="h-3.5 w-3.5 shrink-0" /> {listing.location}
+                          </span>
+                        </span>
+                        <span className="shrink-0 rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                          {listing.category}
+                        </span>
                       </span>
-                    </div>
+                    </Button>
                     <Link
                       to="/listings/$id"
                       params={{ id: listing.id }}
-                      onClick={(event) => event.stopPropagation()}
-                      className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                      className="mb-4 ml-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                     >
                       Open share <ExternalLink className="h-3.5 w-3.5" />
                     </Link>
-                  </button>
+                  </div>
                 );
               })}
             </div>
