@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { MapPin, Calendar, Users, ArrowLeft, MessageCircle } from "lucide-react";
+import { MapPin, Calendar, Users, ArrowLeft, MessageCircle, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
@@ -71,6 +71,21 @@ function ListingDetail() {
   const canRateOwner = !!user && (joined || isOwner === false && false); // joiners can rate owner
   const myRatingExists = data.ratings.some(r => r.rater_id === user?.id);
 
+  const handleShare = async () => {
+    const shareData = { title: listing.title, text: `Check out this share on ShareX: ${listing.title}`, url: window.location.href };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success("Share link copied");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      toast.error("Could not share this listing");
+    }
+  };
+
   const handleJoin = async () => {
     if (!user) { navigate({ to: "/auth" }); return; }
     const { error } = await supabase.from("listing_participants").insert({
@@ -108,11 +123,16 @@ function ListingDetail() {
     <div className="min-h-screen bg-background">
       <SiteHeader />
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 gap-3">
           <Link to="/browse" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4 mr-1" /> Back to browse
           </Link>
-          {!isOwner && <ReportDialog reportedListingId={listing.id} label="Report listing" />}
+            <div className="flex items-center gap-2">
+              <Button type="button" variant="outline" size="sm" onClick={handleShare} title="Share this listing">
+                <Share2 className="h-4 w-4" /> <span className="hidden sm:inline">Share</span>
+              </Button>
+              {!isOwner && <ReportDialog reportedListingId={listing.id} label="Report listing" />}
+            </div>
         </div>
 
         <div className={`rounded-3xl bg-gradient-to-br ${cat?.color} p-8 sm:p-10 text-white mb-8 relative overflow-hidden`}>
