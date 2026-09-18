@@ -9,7 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as CommunitiesRouteImport } from './routes/communities'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -18,15 +20,27 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ListingsIdRouteImport } from './routes/listings.$id'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as AuthenticatedVerifyRouteImport } from './routes/_authenticated/verify'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedNewRouteImport } from './routes/_authenticated/new'
 import { Route as AuthenticatedMyRouteImport } from './routes/_authenticated/my'
 import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
+import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedMessagesIdRouteImport } from './routes/_authenticated/messages.$id'
 import { Route as AuthenticatedCommunitiesIdRouteImport } from './routes/_authenticated/communities.$id'
 
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
   id: '/how-it-works',
   path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommunitiesRoute = CommunitiesRouteImport.update({
@@ -68,6 +82,11 @@ const AuthenticatedVerifyRoute = AuthenticatedVerifyRouteImport.update({
   path: '/verify',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedNewRoute = AuthenticatedNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -81,6 +100,11 @@ const AuthenticatedMyRoute = AuthenticatedMyRouteImport.update({
 const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedActivityRoute = AuthenticatedActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMessagesIdRoute = AuthenticatedMessagesIdRouteImport.update({
@@ -100,10 +124,14 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/communities': typeof CommunitiesRoute
+  '/discover': typeof DiscoverRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/map': typeof MapRoute
+  '/activity': typeof AuthenticatedActivityRoute
   '/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/my': typeof AuthenticatedMyRoute
   '/new': typeof AuthenticatedNewRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
@@ -115,10 +143,14 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/communities': typeof CommunitiesRoute
+  '/discover': typeof DiscoverRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/map': typeof MapRoute
+  '/activity': typeof AuthenticatedActivityRoute
   '/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/my': typeof AuthenticatedMyRoute
   '/new': typeof AuthenticatedNewRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
@@ -132,10 +164,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
   '/communities': typeof CommunitiesRoute
+  '/discover': typeof DiscoverRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/map': typeof MapRoute
+  '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/_authenticated/my': typeof AuthenticatedMyRoute
   '/_authenticated/new': typeof AuthenticatedNewRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/verify': typeof AuthenticatedVerifyRoute
   '/category/$slug': typeof CategorySlugRoute
   '/listings/$id': typeof ListingsIdRoute
@@ -149,10 +185,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/browse'
     | '/communities'
+    | '/discover'
     | '/how-it-works'
+    | '/map'
+    | '/activity'
     | '/messages'
     | '/my'
     | '/new'
+    | '/profile'
     | '/verify'
     | '/category/$slug'
     | '/listings/$id'
@@ -164,10 +204,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/browse'
     | '/communities'
+    | '/discover'
     | '/how-it-works'
+    | '/map'
+    | '/activity'
     | '/messages'
     | '/my'
     | '/new'
+    | '/profile'
     | '/verify'
     | '/category/$slug'
     | '/listings/$id'
@@ -180,10 +224,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/browse'
     | '/communities'
+    | '/discover'
     | '/how-it-works'
+    | '/map'
+    | '/_authenticated/activity'
     | '/_authenticated/messages'
     | '/_authenticated/my'
     | '/_authenticated/new'
+    | '/_authenticated/profile'
     | '/_authenticated/verify'
     | '/category/$slug'
     | '/listings/$id'
@@ -197,18 +245,34 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
   CommunitiesRoute: typeof CommunitiesRoute
+  DiscoverRoute: typeof DiscoverRoute
   HowItWorksRoute: typeof HowItWorksRoute
+  MapRoute: typeof MapRoute
   CategorySlugRoute: typeof CategorySlugRoute
   ListingsIdRoute: typeof ListingsIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/how-it-works': {
       id: '/how-it-works'
       path: '/how-it-works'
       fullPath: '/how-it-works'
       preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/communities': {
@@ -267,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedVerifyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/new': {
       id: '/_authenticated/new'
       path: '/new'
@@ -286,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/messages'
       fullPath: '/messages'
       preLoaderRoute: typeof AuthenticatedMessagesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/activity': {
+      id: '/_authenticated/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof AuthenticatedActivityRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/messages/$id': {
@@ -319,17 +397,21 @@ const AuthenticatedMessagesRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRouteWithChildren
   AuthenticatedMyRoute: typeof AuthenticatedMyRoute
   AuthenticatedNewRoute: typeof AuthenticatedNewRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedVerifyRoute: typeof AuthenticatedVerifyRoute
   AuthenticatedCommunitiesIdRoute: typeof AuthenticatedCommunitiesIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedMessagesRoute: AuthenticatedMessagesRouteWithChildren,
   AuthenticatedMyRoute: AuthenticatedMyRoute,
   AuthenticatedNewRoute: AuthenticatedNewRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedVerifyRoute: AuthenticatedVerifyRoute,
   AuthenticatedCommunitiesIdRoute: AuthenticatedCommunitiesIdRoute,
 }
@@ -343,7 +425,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
   CommunitiesRoute: CommunitiesRoute,
+  DiscoverRoute: DiscoverRoute,
   HowItWorksRoute: HowItWorksRoute,
+  MapRoute: MapRoute,
   CategorySlugRoute: CategorySlugRoute,
   ListingsIdRoute: ListingsIdRoute,
 }

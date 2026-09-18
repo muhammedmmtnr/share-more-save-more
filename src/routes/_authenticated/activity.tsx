@@ -28,7 +28,7 @@ function ActivityPage() {
     enabled: !!user,
     queryFn: async () => {
       const [{ data: parts }, { data: convos }] = await Promise.all([
-        supabase.from("listing_participants").select("listing_id,created_at").eq("user_id", user!.id),
+        supabase.from("listing_participants").select("listing_id").eq("user_id", user!.id),
         supabase
           .from("conversations")
           .select("id,listing_id,last_message_at")
